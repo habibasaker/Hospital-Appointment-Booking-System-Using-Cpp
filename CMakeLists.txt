@@ -7,30 +7,40 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# include headers
 include_directories(include)
 
+# =========================
+# Source files (CORE)
+# =========================
 file(GLOB_RECURSE CORE_SOURCES
     src/core/*.cpp
 )
 
+# =========================
+# Main app (SAFE VERSION)
+# =========================
+file(GLOB APP_SOURCES
+    src/*.cpp
+    src/app/*.cpp
+)
+
 add_executable(app
-    src/app/Main.cpp
+    ${APP_SOURCES}
     ${CORE_SOURCES}
 )
 
+# =========================
+# Testing
+# =========================
 enable_testing()
 
-# =========================
-# GoogleTest (FIXED)
-# =========================
 include(FetchContent)
 
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/release-1.12.1.zip
 )
-
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
 
