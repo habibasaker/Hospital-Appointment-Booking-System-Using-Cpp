@@ -20,8 +20,19 @@ add_executable(app
 
 enable_testing()
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+# =========================
+# GoogleTest (FIXED)
+# =========================
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/release-1.12.1.zip
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE TEST_SOURCES
     tests/*.cpp
@@ -32,6 +43,11 @@ add_executable(runTests
     ${CORE_SOURCES}
 )
 
-target_link_libraries(runTests GTest::GTest GTest::Main pthread)
+target_link_libraries(runTests
+    GTest::gtest
+    GTest::gtest_main
+    pthread
+)
 
-add_test(NAME AllTests COMMAND runTests)
+include(GoogleTest)
+gtest_discover_tests(runTests)
